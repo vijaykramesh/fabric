@@ -1010,6 +1010,9 @@ def local(command, capture=False, sudo=False, user=None):
     ``return_code``, ``stderr``, ``failed`` and ``succeeded`` attributes. See
     `run` for details.
 
+    The sudo and user flags can be used directly via `local` - however, for
+    ease of use, the `local_sudo` function sets these appropriately.
+    
     `~fabric.operations.local` will honor the `~fabric.context_managers.lcd`
     context manager, allowing you to control its current working directory
     independently of the remote end (which honors
