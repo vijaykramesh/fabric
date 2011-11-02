@@ -985,7 +985,7 @@ def sudo(command, shell=True, pty=True, combine_stderr=None, user=None):
         user=user)
 
 
-def local(command, capture=False):
+def local(command, capture=False, sudo=False, user=None):
     """
     Run a command on the local system.
 
@@ -1024,7 +1024,10 @@ def local(command, capture=False):
     """
     given_command = command
     # Apply cd(), path() etc
+    
     wrapped_command = _prefix_commands(_prefix_env_vars(command), 'local')
+    if sudo:
+        wrapped_command = _shell_wrap(wrapped_command, _sudo_prefix(user))
     if output.debug:
         print("[localhost] local: %s" % (wrapped_command))
     elif output.running:
@@ -1062,7 +1065,22 @@ def local(command, capture=False):
     # If we were capturing, this will be a string; otherwise it will be None.
     return out
 
+def local_sudo(command, capture = False, user=None):
+    """
+    Run a shell command on a local host, with superuser privileges.
 
+    `local_sudo` is identical in every way to `local`, except that it will always wrap
+    the given ``command`` in a call to the ``sudo`` program to provide
+    superuser privileges.
+
+    `local_sudo` accepts an additional ``user`` argument, which is passed to ``sudo``
+    and allows you to run as some user other than root.  On most systems, the
+    ``sudo`` program can take a string username or an integer userid (uid);
+    ``user`` may likewise be a string or an int.
+    """
+    return local(command, capture, True, user)
+    
+    
 @needs_host
 def reboot(wait):
     """
