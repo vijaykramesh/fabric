@@ -1029,7 +1029,7 @@ def local(command, capture=False, sudo=False, user=None):
     # Apply cd(), path() etc
     wrapped_command = _shell_wrap(
         _prefix_commands(_prefix_env_vars(command), 'local'),
-        shell,
+        False,
         _sudo_prefix(user) if sudo else None
     )
     
