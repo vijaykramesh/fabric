@@ -1027,10 +1027,12 @@ def local(command, capture=False, sudo=False, user=None):
     """
     given_command = command
     # Apply cd(), path() etc
+    wrapped_command = _shell_wrap(
+        _prefix_commands(_prefix_env_vars(command), 'local'),
+        shell,
+        _sudo_prefix(user) if sudo else None
+    )
     
-    wrapped_command = _prefix_commands(_prefix_env_vars(command), 'local')
-    if sudo:
-        wrapped_command = _shell_wrap(wrapped_command, _sudo_prefix(user))
     if output.debug:
         print("[localhost] local: %s" % (wrapped_command))
     elif output.running:
@@ -1081,7 +1083,7 @@ def local_sudo(command, capture = False, user=None):
     ``sudo`` program can take a string username or an integer userid (uid);
     ``user`` may likewise be a string or an int.
     """
-    return local(command, capture, True, user)
+    return local(command, capture, sudo = True, user = user)
     
     
 @needs_host
